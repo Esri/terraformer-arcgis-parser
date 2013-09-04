@@ -2,7 +2,7 @@
 complexity.xml
 
 # Ignore Coverage output
-.coverage
+coverage
 
 # Ignore Grunt temp files
 .grunt
@@ -17,4 +17,4 @@ Icon
 *.sublime-workspace
 
 #Node
-/node_modules
+node_modules
