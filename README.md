@@ -28,7 +28,7 @@ $ bower install terraformer-arcgis-parser
 
 ### Node.js
 
-    var ArcGIS = require('terraformer-wkt-parser');
+    var ArcGIS = require('terraformer-arcgis-parser');
     
     // parse ArcGIS JSON, convert it to a Terraformer.Primitive
     var primitive = ArcGIS.parse({
