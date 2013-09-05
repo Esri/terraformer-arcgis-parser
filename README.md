@@ -1,6 +1,6 @@
 # Terraformer ArcGIS JSON Parser
 
-This plugin handles 2 way conversion between [GeoJSON](http://geojson.org/geojson-spec.html) and the [ArcGIS Geometryy](http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html) format used by Esri.
+This plugin handles 2 way conversion between [GeoJSON](http://geojson.org/geojson-spec.html) and the [ArcGIS Geometry](http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html) format used by Esri.
 
 This package is part of the [Terraformer](https://github.com/Esri/Terraformer) project.
 
@@ -78,7 +78,7 @@ The Terraformer ArcGIS Parser can be used in the browser with some simple includ
 
 It is important to note that Terraformer **DOES NOT** attempt to set an ID on the feature is outputs when converting ArcGIS into GeoJSON. You should always set an id after parsing it to GeoJSON. This is because the concept a unique feature id does not exist in the ArcGIS spec.
 
-Terraformer will also handle converting `FeatureCollection` and `GeometryCollection` objects to arrays of ArcGIS geometries or features. However it will **Not** do this in reverse as there is no official structure for arrays of features in ArcGIS and all the output features will not have `id` properties. See [this issue](https://github.com/Esri/Terraformer/issues/104) for more details.
+Terraformer will also handle converting `FeatureCollection` and `GeometryCollection` objects to arrays of ArcGIS geometries or features. However it will **Not** do this in reverse as there is no official structure for arrays of features and geometries in ArcGIS and all the output features will not have `id` properties. See [this issue](https://github.com/Esri/Terraformer/issues/104) for more details.
 
 [](Esri Tags: Terraformer GeoJSON ArcGIS)
 [](Esri Language: JavaScript)
