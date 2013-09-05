@@ -74,5 +74,11 @@ The Terraformer ArcGIS Parser can be used in the browser with some simple includ
   </script>
   ```
 
+### Notes
+
+It is important to note that Terraformer **DOES NOT** attempt to set an ID on the feature is outputs when converting ArcGIS into GeoJSON. You should always set an id after parsing it to GeoJSON. This is because the concept a unique feature id does not exist in the ArcGIS spec.
+
+Terraformer will also handle converting `FeatureCollection` and `GeometryCollection` objects to arrays of ArcGIS geometries or features. However it will **Not** do this in reverse as there is no official structure for arrays of features in ArcGIS and all the output features will not have `id` properties. See [this issue](https://github.com/Esri/Terraformer/issues/104) for more details.
+
 [](Esri Tags: Terraformer GeoJSON ArcGIS)
 [](Esri Language: JavaScript)
