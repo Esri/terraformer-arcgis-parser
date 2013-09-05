@@ -3,40 +3,19 @@
 
   // Node.
   if(typeof module === 'object' && typeof module.exports === 'object') {
-    exports = module.exports = factory();
-  }
-
-  // AMD.
-  if(typeof define === 'function' && define.amd) {
-    define(["terraformer/terraformer"],factory);
+    exports = module.exports = factory(require('terraformer'));
   }
 
   // Browser Global.
   if(typeof root.navigator === "object") {
-    if (typeof root.Terraformer === "undefined"){
-      root.Terraformer = {};
+    if (!root.Terraformer){
+      throw new Error("Terraformer.ArcGIS requires the core Terraformer library. https://github.com/esri/Terraformer");
     }
-    root.Terraformer.ArcGIS = factory();
+    root.Terraformer.ArcGIS = factory(root.Terraformer);
   }
 
-}(this, function() {
+}(this, function(Terraformer) {
   var exports = {};
-  var Terraformer;
-
-  // Local Reference To Browser Global
-  if(typeof this.navigator === "object") {
-    Terraformer = this.Terraformer;
-  }
-
-  // Setup Node Dependencies
-  if(typeof module === 'object' && typeof module.exports === 'object') {
-    Terraformer = require('terraformer');
-  }
-
-  // Setup AMD Dependencies
-  if(arguments[0] && typeof define === 'function' && define.amd) {
-    Terraformer = arguments[0];
-  }
 
   // determine if polygon ring coordinates are clockwise. clockwise signifies outer ring, counter-clockwise an inner ring
   // or hole. this logic was found at http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-
