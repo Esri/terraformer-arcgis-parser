@@ -185,7 +185,6 @@
 
   // ArcGIS -> GeoJSON
   function parse(input){
-    //var arcgis = JSON.parse(JSON.stringify(input));
     var arcgis = input;
     var geojson = {};
 
@@ -231,7 +230,6 @@
 
   // GeoJSON -> ArcGIS
   function convert(input, sr){
-    //var geojson = JSON.parse(JSON.stringify(input));
     var geojson = input;
     var spatialReference;
 
