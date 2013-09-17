@@ -58,9 +58,10 @@
   //   [ hole coordinates ]
   //   [ hole coordinates ]
   // ]
-  function flattenPolygonRings(polygon){
+  function flattenPolygonRings(poly){
     var output = [];
-    var outerRing = polygon.shift();
+    var polygon = poly.slice(0);
+    var outerRing = polygon.shift().slice(0);
 
     if(!ringIsClockwise(outerRing)){
       outerRing.reverse();
@@ -69,11 +70,11 @@
     output.push(outerRing);
 
     for (var i = 0; i < polygon.length; i++) {
-      var hole = polygon[i];
+      var hole = polygon[i].slice(0);
       if(ringIsClockwise(hole)){
-        outerRing.reverse();
+        hole.reverse();
       }
-      output.push(polygon[i]);
+      output.push(hole);
     }
 
     return output;
@@ -107,10 +108,9 @@
     for (var i = 0; i < rings.length; i++) {
       var polygon = flattenPolygonRings(rings[i]);
       for (var x = polygon.length - 1; x >= 0; x--) {
-        var ring = polygon[x];
+        var ring = polygon[x].slice(0);
         output.push(ring);
       }
-      output.push();
     }
     return output;
   }
@@ -132,7 +132,7 @@
 
     // for each ring
     for (var r = 0; r < rings.length; r++) {
-      var ring = rings[r];
+      var ring = rings[r].slice(0);
 
       // is this ring an outer ring? is it clockwise?
       if(ringIsClockwise(ring)){
@@ -184,8 +184,7 @@
   }
 
   // ArcGIS -> GeoJSON
-  function parse(input){
-    var arcgis = input;
+  function parse(arcgis){
     var geojson = {};
 
     if(arcgis.x && arcgis.y){
@@ -195,21 +194,21 @@
 
     if(arcgis.points){
       geojson.type = "MultiPoint";
-      geojson.coordinates = arcgis.points.splice(0);
+      geojson.coordinates = arcgis.points.slice(0);
     }
 
     if(arcgis.paths) {
       if(arcgis.paths.length === 1){
         geojson.type = "LineString";
-        geojson.coordinates = arcgis.paths[0].splice(0);
+        geojson.coordinates = arcgis.paths[0].slice(0);
       } else {
         geojson.type = "MultiLineString";
-        geojson.coordinates = arcgis.paths.splice(0);
+        geojson.coordinates = arcgis.paths.slice(0);
       }
     }
 
     if(arcgis.rings) {
-      geojson = convertRingsToGeoJSON(arcgis.rings.splice(0));
+      geojson = convertRingsToGeoJSON(arcgis.rings.slice(0));
     }
 
     if(arcgis.geometry) {
@@ -229,13 +228,12 @@
   }
 
   // GeoJSON -> ArcGIS
-  function convert(input, sr){
-    var geojson = input;
+  function convert(geojson, sr){
     var spatialReference;
 
     if(sr){
       spatialReference = sr;
-    } else if (geojson.crs === Terraformer.MercatorCRS) {
+    } else if (geojson && geojson.crs === Terraformer.MercatorCRS) {
       spatialReference = { wkid: 102100 };
     } else {
       spatialReference = { wkid: 4326 };
@@ -251,23 +249,23 @@
       result.spatialReference = spatialReference;
       break;
     case "MultiPoint":
-      result.points = geojson.coordinates.splice(0);
+      result.points = geojson.coordinates.slice(0);
       result.spatialReference = spatialReference;
       break;
     case "LineString":
-      result.paths = [geojson.coordinates.splice(0)];
+      result.paths = [geojson.coordinates.slice(0)];
       result.spatialReference = spatialReference;
       break;
     case "MultiLineString":
-      result.paths = geojson.coordinates.splice(0);
+      result.paths = geojson.coordinates.slice(0);
       result.spatialReference = spatialReference;
       break;
     case "Polygon":
-      result.rings = flattenPolygonRings(geojson.coordinates.splice(0));
+      result.rings = flattenPolygonRings(geojson.coordinates.slice(0));
       result.spatialReference = spatialReference;
       break;
     case "MultiPolygon":
-      result.rings = flattenMultiPolygonRings(geojson.coordinates.splice(0));
+      result.rings = flattenMultiPolygonRings(geojson.coordinates.slice(0));
       result.spatialReference = spatialReference;
       break;
     case "Feature":
