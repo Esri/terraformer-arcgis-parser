@@ -329,6 +329,50 @@ describe("ArcGIS Tools", function(){
     }]);
   });
 
+  it("should not modify the original GeoJSON object", function(){
+    var primitive = new Terraformer.FeatureCollection({
+      "type": "FeatureCollection",
+      "features": [{
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [102.0, 0.5]
+        },
+        "properties": {
+          "prop0": "value0"
+        }
+      }, {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [102.0, 0.0],[103.0, 1.0],[104.0, 0.0],[105.0, 1.0]
+          ]
+        },
+        "properties": {
+          "prop0": "value0"
+        }
+      }, {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [ [100.0, 0.0],[101.0, 0.0],[101.0, 1.0],[100.0, 1.0],[100.0, 0.0] ]
+          ]
+        },
+        "properties": {
+          "prop0": "value0"
+        }
+      }]
+    });
+
+    var original = JSON.stringify(primitive);
+
+    Terraformer.ArcGIS.convert(primitive);
+
+    expect(original).toEqual(JSON.stringify(primitive));
+  });
+
   it("should parse an ArcGIS Point in a Terraformer GeoJSON Point", function() {
     var input = {
       "x": -66.796875,
@@ -543,6 +587,28 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([-121.99999999999794, 44.99999999999924]);
+  });
+
+  it("should not modify the original ArcGIS Geometry", function(){
+    var input = {
+      "geometry": {
+        "rings": [
+          [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
+        ],
+        "spatialReference": {
+          "wkid": 4326
+        }
+      },
+      "attributes": {
+        "foo": "bar"
+      }
+    };
+
+    var original = JSON.stringify(input);
+
+    Terraformer.ArcGIS.parse(input);
+
+    expect(original).toEqual(JSON.stringify(input));
   });
 
 });
