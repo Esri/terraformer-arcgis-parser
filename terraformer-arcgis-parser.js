@@ -17,6 +17,18 @@
 }(this, function(Terraformer) {
   var exports = {};
 
+  // shallow object clone for feature properties and attributes
+  // from http://jsperf.com/cloning-an-object/2
+  function clone(obj) {
+    var target = {};
+    for (var i in obj) {
+      if (obj.hasOwnProperty(i)) {
+        target[i] = obj[i];
+      }
+    }
+    return target;
+  }
+
   // determine if polygon ring coordinates are clockwise. clockwise signifies outer ring, counter-clockwise an inner ring
   // or hole. this logic was found at http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-
   // points-are-in-clockwise-order
@@ -173,7 +185,8 @@
 
   // ArcGIS -> GeoJSON
   function parse(input){
-    var arcgis = JSON.parse(JSON.stringify(input));
+    //var arcgis = JSON.parse(JSON.stringify(input));
+    var arcgis = input;
     var geojson = {};
 
     if(arcgis.x && arcgis.y){
@@ -183,27 +196,27 @@
 
     if(arcgis.points){
       geojson.type = "MultiPoint";
-      geojson.coordinates = arcgis.points;
+      geojson.coordinates = arcgis.points.splice(0);
     }
 
     if(arcgis.paths) {
       if(arcgis.paths.length === 1){
         geojson.type = "LineString";
-        geojson.coordinates = arcgis.paths[0];
+        geojson.coordinates = arcgis.paths[0].splice(0);
       } else {
         geojson.type = "MultiLineString";
-        geojson.coordinates = arcgis.paths;
+        geojson.coordinates = arcgis.paths.splice(0);
       }
     }
 
     if(arcgis.rings) {
-      geojson = convertRingsToGeoJSON(arcgis.rings);
+      geojson = convertRingsToGeoJSON(arcgis.rings.splice(0));
     }
 
     if(arcgis.geometry) {
       geojson.type = "Feature";
       geojson.geometry = parse(arcgis.geometry);
-      geojson.properties = arcgis.attributes || {};
+      geojson.properties = clone(arcgis.attributes) || {};
     }
 
     var inputSpatialReference = (arcgis.geometry) ? arcgis.geometry.spatialReference : arcgis.spatialReference;
@@ -218,7 +231,8 @@
 
   // GeoJSON -> ArcGIS
   function convert(input, sr){
-    var geojson = JSON.parse(JSON.stringify(input));
+    //var geojson = JSON.parse(JSON.stringify(input));
+    var geojson = input;
     var spatialReference;
 
     if(sr){
@@ -239,28 +253,28 @@
       result.spatialReference = spatialReference;
       break;
     case "MultiPoint":
-      result.points = geojson.coordinates;
+      result.points = geojson.coordinates.splice(0);
       result.spatialReference = spatialReference;
       break;
     case "LineString":
-      result.paths = [geojson.coordinates];
+      result.paths = [geojson.coordinates.splice(0)];
       result.spatialReference = spatialReference;
       break;
     case "MultiLineString":
-      result.paths = geojson.coordinates;
+      result.paths = geojson.coordinates.splice(0);
       result.spatialReference = spatialReference;
       break;
     case "Polygon":
-      result.rings = flattenPolygonRings(geojson.coordinates);
+      result.rings = flattenPolygonRings(geojson.coordinates.splice(0));
       result.spatialReference = spatialReference;
       break;
     case "MultiPolygon":
-      result.rings = flattenMultiPolygonRings(geojson.coordinates);
+      result.rings = flattenMultiPolygonRings(geojson.coordinates.splice(0));
       result.spatialReference = spatialReference;
       break;
     case "Feature":
       result.geometry = convert(geojson.geometry);
-      result.attributes = geojson.properties;
+      result.attributes = clone(geojson.properties);
       break;
     case "FeatureCollection":
       result = [];
