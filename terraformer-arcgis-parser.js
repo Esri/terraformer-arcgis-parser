@@ -269,8 +269,8 @@
       result.spatialReference = spatialReference;
       break;
     case "Feature":
-      result.geometry = convert(geojson.geometry);
-      result.attributes = clone(geojson.properties);
+      if (geojson.geometry) result.geometry = convert(geojson.geometry);
+      if (geojson.properties) result.attributes = geojson.properties;
       break;
     case "FeatureCollection":
       result = [];
