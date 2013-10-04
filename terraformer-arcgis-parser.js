@@ -211,9 +211,9 @@
       geojson = convertRingsToGeoJSON(arcgis.rings.slice(0));
     }
 
-    if(arcgis.geometry) {
+    if(arcgis.geometry || arcgis.attributes) {
       geojson.type = "Feature";
-      geojson.geometry = parse(arcgis.geometry);
+      geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : {};
       geojson.properties = clone(arcgis.attributes) || {};
     }
 
@@ -269,8 +269,12 @@
       result.spatialReference = spatialReference;
       break;
     case "Feature":
-      if (geojson.geometry) result.geometry = convert(geojson.geometry);
-      if (geojson.properties) result.attributes = geojson.properties;
+      if(geojson.geometry) {
+        result.geometry = convert(geojson.geometry);
+      }
+      if(geojson.properties){
+        result.attributes = clone(geojson.properties);
+      }
       break;
     case "FeatureCollection":
       result = [];
