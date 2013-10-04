@@ -212,6 +212,18 @@ describe("ArcGIS Tools", function(){
     });
   });
 
+  it("should allow converting a GeoJSON Feature to an ArcGIS Feature with no properties or geometry", function(){
+    var input = {
+      "type":"Feature",
+      "geometry": null,
+      "properties": null
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+
+    expect(output).toEqual({});
+  });
+
   it("should convert a GeoJSON FeatureCollection into an array of ArcGIS Feature JSON", function(){
     var input = {
       "type": "FeatureCollection",
@@ -568,6 +580,20 @@ describe("ArcGIS Tools", function(){
     ]);
     expect(output.geometry.type).toEqual("Polygon");
     expect(output).toBeInstanceOfClass(Terraformer.Feature);
+  });
+
+  it("should parse an ArcGIS Feature w/ no geometry into a Terraformer Feature", function(){
+    var input = {
+      "attributes": {
+        "foo": "bar"
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.geometry).toEqual({});
+    expect(output).toBeInstanceOfClass(Terraformer.Feature);
+    expect(output.properties.foo).toEqual("bar");
   });
 
   it("should convert to WGS84/4326 while parsing", function(){
