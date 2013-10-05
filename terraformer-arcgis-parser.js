@@ -213,8 +213,8 @@
 
     if(arcgis.geometry || arcgis.attributes) {
       geojson.type = "Feature";
-      geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : {};
-      geojson.properties = clone(arcgis.attributes) || {};
+      geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : null;
+      geojson.properties = (arcgis.attributes) ? clone(arcgis.attributes) : null;
     }
 
     var inputSpatialReference = (arcgis.geometry) ? arcgis.geometry.spatialReference : arcgis.spatialReference;

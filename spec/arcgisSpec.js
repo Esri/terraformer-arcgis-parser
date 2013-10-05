@@ -561,7 +561,7 @@ describe("ArcGIS Tools", function(){
     expect(output).toBeInstanceOfClass(Terraformer.Feature);
   });
 
-  it("should parse an ArcGIS Graphic w/ no attributes into a Terraformer Feature", function(){
+  it("should parse an ArcGIS Feature w/ no attributes into a Terraformer Feature", function(){
     var input = {
       "geometry": {
         "rings": [
@@ -580,6 +580,7 @@ describe("ArcGIS Tools", function(){
     ]);
     expect(output.geometry.type).toEqual("Polygon");
     expect(output).toBeInstanceOfClass(Terraformer.Feature);
+    expect(output.properties).toEqual(null);
   });
 
   it("should parse an ArcGIS Feature w/ no geometry into a Terraformer Feature", function(){
@@ -591,7 +592,7 @@ describe("ArcGIS Tools", function(){
 
     var output = Terraformer.ArcGIS.parse(input);
 
-    expect(output.geometry).toEqual({});
+    expect(output.geometry).toEqual(null);
     expect(output).toBeInstanceOfClass(Terraformer.Feature);
     expect(output.properties.foo).toEqual("bar");
   });
