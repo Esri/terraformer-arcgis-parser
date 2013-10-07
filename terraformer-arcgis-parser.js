@@ -267,7 +267,7 @@
       break;
     case "Feature":
       if(geojson.geometry) {
-        result.geometry = convert(geojson.geometry);
+        result.geometry = convert(geojson.geometry, options);
       }
       result.attributes = (geojson.properties) ? clone(geojson.properties) : {};
       result.attributes[idAttribute] = geojson.id;
