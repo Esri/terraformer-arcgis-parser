@@ -206,8 +206,8 @@
       geojson.type = "Feature";
       geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : null;
       geojson.properties = (arcgis.attributes) ? clone(arcgis.attributes) : null;
-      if(geojson.properties) {
-        geojson.id =  geojson.properties[options.idAttribute] || geojson.properties.OBJECTID || geojson.properties.FID
+      if(arcgis.attributes) {
+        geojson.id =  arcgis.attributes[options.idAttribute] || arcgis.attributes.OBJECTID || arcgis.attributes.FID
       }
     }
 
@@ -275,13 +275,13 @@
     case "FeatureCollection":
       result = [];
       for (i = 0; i < geojson.features.length; i++){
-        result.push(convert(geojson.features[i]));
+        result.push(convert(geojson.features[i], options));
       }
       break;
     case "GeometryCollection":
       result = [];
       for (i = 0; i < geojson.geometries.length; i++){
-        result.push(convert(geojson.geometries[i]));
+        result.push(convert(geojson.geometries[i], options));
       }
       break;
     }
