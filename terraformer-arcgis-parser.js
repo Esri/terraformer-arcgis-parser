@@ -45,20 +45,9 @@
     return (total >= 0);
   }
 
-  // This function flattens holes in polygons to one array of rings
-  //
-  // [
-  //   [ array of outer coordinates ]
-  //   [ hole coordinates ]
-  //   [ hole coordinates ]
-  // ]
-  // becomes
-  // [
-  //   [ array of outer coordinates ]
-  //   [ hole coordinates ]
-  //   [ hole coordinates ]
-  // ]
-  function flattenPolygonRings(poly){
+  // This function ensures that rings are oriented in the right directions
+  // outer rings are clockwise, holes are counterclockwise
+  function orientRings(poly){
     var output = [];
     var polygon = poly.slice(0);
     var outerRing = polygon.shift().slice(0);
@@ -81,7 +70,6 @@
   }
 
   // This function flattens holes in multipolygons to one array of polygons
-  // so
   // [
   //   [
   //     [ array of outer coordinates ]
@@ -106,7 +94,7 @@
   function flattenMultiPolygonRings(rings){
     var output = [];
     for (var i = 0; i < rings.length; i++) {
-      var polygon = flattenPolygonRings(rings[i]);
+      var polygon = orientRings(rings[i]);
       for (var x = polygon.length - 1; x >= 0; x--) {
         var ring = polygon[x].slice(0);
         output.push(ring);
@@ -184,8 +172,11 @@
   }
 
   // ArcGIS -> GeoJSON
-  function parse(arcgis){
+  function parse(arcgis, options){
     var geojson = {};
+
+    options = options || {};
+    options.idAttribute = options.idAttribute || undefined;
 
     if(arcgis.x && arcgis.y){
       geojson.type = "Point";
@@ -213,8 +204,11 @@
 
     if(arcgis.geometry || arcgis.attributes) {
       geojson.type = "Feature";
-      geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : {};
-      geojson.properties = clone(arcgis.attributes) || {};
+      geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : null;
+      geojson.properties = (arcgis.attributes) ? clone(arcgis.attributes) : null;
+      if(arcgis.attributes) {
+        geojson.id =  arcgis.attributes[options.idAttribute] || arcgis.attributes.OBJECTID || arcgis.attributes.FID
+      }
     }
 
     var inputSpatialReference = (arcgis.geometry) ? arcgis.geometry.spatialReference : arcgis.spatialReference;
@@ -228,11 +222,14 @@
   }
 
   // GeoJSON -> ArcGIS
-  function convert(geojson, sr){
+  function convert(geojson, options){
     var spatialReference;
 
-    if(sr){
-      spatialReference = sr;
+    options = options || {};
+    var idAttribute = options.idAttribute || "OBJECTID";
+
+    if(options.sr){
+      spatialReference = { wkid: sr };
     } else if (geojson && geojson.crs === Terraformer.MercatorCRS) {
       spatialReference = { wkid: 102100 };
     } else {
@@ -261,7 +258,7 @@
       result.spatialReference = spatialReference;
       break;
     case "Polygon":
-      result.rings = flattenPolygonRings(geojson.coordinates.slice(0));
+      result.rings = orientRings(geojson.coordinates.slice(0));
       result.spatialReference = spatialReference;
       break;
     case "MultiPolygon":
@@ -270,22 +267,21 @@
       break;
     case "Feature":
       if(geojson.geometry) {
-        result.geometry = convert(geojson.geometry);
+        result.geometry = convert(geojson.geometry, options);
       }
-      if(geojson.properties){
-        result.attributes = clone(geojson.properties);
-      }
+      result.attributes = (geojson.properties) ? clone(geojson.properties) : {};
+      result.attributes[idAttribute] = geojson.id;
       break;
     case "FeatureCollection":
       result = [];
       for (i = 0; i < geojson.features.length; i++){
-        result.push(convert(geojson.features[i]));
+        result.push(convert(geojson.features[i], options));
       }
       break;
     case "GeometryCollection":
       result = [];
       for (i = 0; i < geojson.geometries.length; i++){
-        result.push(convert(geojson.geometries[i]));
+        result.push(convert(geojson.geometries[i], options));
       }
       break;
     }
