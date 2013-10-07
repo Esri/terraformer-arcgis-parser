@@ -181,9 +181,10 @@ describe("ArcGIS Tools", function(){
     });
   });
 
-  it("should convert a GeoJSON Feature into an ArcGIS Graphic JSON", function(){
+  it("should convert a GeoJSON Feature into an ArcGIS Feature", function(){
     var input = {
       "type":"Feature",
+      "id": "foo",
       "geometry": {
         "type": "Polygon",
         "coordinates": [
@@ -207,7 +208,43 @@ describe("ArcGIS Tools", function(){
         }
       },
       "attributes": {
+        "foo":"bar",
+        "OBJECTID": "foo"
+      }
+    });
+  });
+
+  it("should convert a GeoJSON Feature into an ArcGIS Feature w/ a custom id", function(){
+    var input = {
+      "type":"Feature",
+      "id": "foo",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
+        ]
+      },
+      "properties": {
         "foo":"bar"
+      }
+    };
+
+    var output = Terraformer.ArcGIS.convert(input, {
+      idAttribute: "myId"
+    });
+
+    expect(output).toEqual({
+      "geometry":{
+        "rings":[
+          [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
+        ],
+        "spatialReference":{
+          "wkid":4326
+        }
+      },
+      "attributes": {
+        "foo":"bar",
+        "myId": "foo"
       }
     });
   });
@@ -215,13 +252,18 @@ describe("ArcGIS Tools", function(){
   it("should allow converting a GeoJSON Feature to an ArcGIS Feature with no properties or geometry", function(){
     var input = {
       "type":"Feature",
+      "id": "foo",
       "geometry": null,
       "properties": null
     };
 
     var output = Terraformer.ArcGIS.convert(input);
 
-    expect(output).toEqual({});
+    expect(output).toEqual({
+      "attributes": {
+        "OBJECTID": "foo"
+      }
+    });
   });
 
   it("should convert a GeoJSON FeatureCollection into an array of ArcGIS Feature JSON", function(){
@@ -515,7 +557,7 @@ describe("ArcGIS Tools", function(){
     expect(output.type).toEqual("MultiPolygon");
   });
 
-  it("should parse an ArcGIS Graphic into a Terraformer Feature", function(){
+  it("should parse an ArcGIS Feature into a Terraformer Feature", function(){
     var input = {
       "geometry": {
         "rings": [
@@ -539,7 +581,69 @@ describe("ArcGIS Tools", function(){
     expect(output).toBeInstanceOfClass(Terraformer.Feature);
   });
 
-  it("should parse an ArcGIS Graphic w/ empty attributes into a Terraformer Feature", function(){
+  it("should parse an ArcGIS Feature w/ OBJECTID into a Terraformer Feature", function(){
+    var input = {
+      "geometry": {
+        "rings": [
+          [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
+        ],
+        "spatialReference": {
+          "wkid": 4326
+        }
+      },
+      "attributes": {
+        "OBJECTID": 123
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.id).toEqual(123);
+  });
+
+  it("should parse an ArcGIS Feature w/ FID into a Terraformer Feature", function(){
+    var input = {
+      "geometry": {
+        "rings": [
+          [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
+        ],
+        "spatialReference": {
+          "wkid": 4326
+        }
+      },
+      "attributes": {
+        "FID": 123
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.id).toEqual(123);
+  });
+
+  it("should parse an ArcGIS Feature w/ a custom id into a Terraformer Feature", function(){
+    var input = {
+      "geometry": {
+        "rings": [
+          [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
+        ],
+        "spatialReference": {
+          "wkid": 4326
+        }
+      },
+      "attributes": {
+        "FooId": 123
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input, {
+      idAttribute: "FooId"
+    });
+
+    expect(output.id).toEqual(123);
+  });
+
+  it("should parse an ArcGIS Feature w/ empty attributes into a Terraformer Feature", function(){
     var input = {
       "geometry": {
         "rings": [
