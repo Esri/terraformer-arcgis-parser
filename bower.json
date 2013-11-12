@@ -2,11 +2,7 @@
   "name": "terraformer-arcgis-parser",
   "version": "1.0.0",
   "main": "terraformer-arcgis-parser.min.js",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "components"
-  ],
+  "ignore"        : ["versions", "benchmarks"],
   "dependencies": {
     "terraformer": "~1.0.0"
   }
