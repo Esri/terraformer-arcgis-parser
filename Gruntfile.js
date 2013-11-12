@@ -1,10 +1,10 @@
 module.exports = function (grunt) {
   grunt.initConfig({
+    aws: grunt.file.readJSON(process.env.HOME + '/terraformer-s3.json'),
     pkg:   grunt.file.readJSON('package.json'),
 
     meta: {
-      version: '0.1.10',
-      banner: '/*! Terraformer ArcGIS Parser - <%= meta.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+      banner: '/*! Terraformer ArcGIS Parser - <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
         '*   https://github.com/esri/terraformer-arcgis-parser\n' +
         '*   Copyright (c) <%= grunt.template.today("yyyy") %> Esri, Inc.\n' +
         '*   Licensed MIT */'
@@ -17,6 +17,10 @@ module.exports = function (grunt) {
       arcgis: {
         src: ["terraformer-arcgis-parser.js"],
         dest: 'terraformer-arcgis-parser.min.js'
+      },
+      versioned: {
+        src: ["terraformer-arcgis-parser.js"],
+        dest: 'versions/terraformer-arcgis-parser-<%= pkg.version %>.min.js'
       }
     },
 
@@ -70,6 +74,28 @@ module.exports = function (grunt) {
           maintainability: 65
         }
       }
+    },
+
+    s3: {
+      options: {
+        key: '<%= aws.key %>',
+        secret: '<%= aws.secret %>',
+        bucket: '<%= aws.bucket %>',
+        access: 'public-read',
+        headers: {
+          // 1 Year cache policy (1000 * 60 * 60 * 24 * 365)
+          "Cache-Control": "max-age=630720000, public",
+          "Expires": new Date(Date.now() + 63072000000).toUTCString()
+        }
+      },
+      dev: {
+        upload: [
+          {
+            src: 'versions/terraformer-arcgis-parser-<%= pkg.version %>.min.js',
+            dest: 'terraformer-arcgis-parser/<%= pkg.version %>/terraformer-arcgis-parser.min.js'
+          }
+        ]
+      },
     }
   });
 
@@ -77,7 +103,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.loadNpmTasks('grunt-complexity');
+  grunt.loadNpmTasks('grunt-s3');
 
-  grunt.registerTask('test', [ 'jasmine', 'jasmine_node' ]);
-  grunt.registerTask('default', [ 'jasmine', 'jasmine_node', 'uglify' ]);
+  grunt.registerTask('test', ['jasmine_node', 'jasmine']);
+  grunt.registerTask('version', ['test', 'uglify', 's3']);
+  grunt.registerTask('default', ['test']);
 };

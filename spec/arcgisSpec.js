@@ -695,7 +695,6 @@ describe("ArcGIS Tools", function(){
     };
 
     var output = Terraformer.ArcGIS.parse(input);
-
     expect(output.geometry).toEqual(null);
     expect(output).toBeInstanceOfClass(Terraformer.Feature);
     expect(output.properties.foo).toEqual("bar");
