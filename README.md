@@ -70,7 +70,7 @@ var point = ArcGIS.convert({
   </script>
   ```
 
-  ## Resources
+## Resources
 
 * [Terraformer Website](http://terraformer.io)
 * [twitter@EsriPDX](http://twitter.com/esripdx)
