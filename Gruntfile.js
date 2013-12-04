@@ -12,7 +12,8 @@ module.exports = function (grunt) {
 
     uglify: {
       options: {
-        report: 'gzip'
+        report: 'gzip',
+        banner: '<%= meta.banner %>'
       },
       arcgis: {
         src: ["terraformer-arcgis-parser.js"],

@@ -229,7 +229,7 @@
     var idAttribute = options.idAttribute || "OBJECTID";
 
     if(options.sr){
-      spatialReference = { wkid: sr };
+      spatialReference = { wkid: options.sr };
     } else if (geojson && geojson.crs === Terraformer.MercatorCRS) {
       spatialReference = { wkid: 102100 };
     } else {
