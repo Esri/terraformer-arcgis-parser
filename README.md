@@ -22,14 +22,12 @@ $ bower install terraformer-arcgis-parser
 
 ## Documentation
 
-For documentation check out the [offical website](http://terraformer.io/arcgis-parser/).
-
-## Examples
+For full documentation check out the [offical website](http://terraformer.io/arcgis-parser/).
 
 ```js
 var ArcGIS = require('terraformer-arcgis-parser');
 
-// parse ArcGIS JSON, convert it to a Terraformer.Primitive
+// parse ArcGIS JSON, convert it to a Terraformer.Primitive (GeoJSON)
 var primitive = ArcGIS.parse({
     x:"-122.6764",
     y:"45.5165",
@@ -38,7 +36,7 @@ var primitive = ArcGIS.parse({
     }
   });
 
-// take a Terraformer.Primitive or GeoJSON and convert it to ArcGIS JSON
+// take a Terraformer.Primitive or GeoJSON and convert it back to ArcGIS JSON
 var point = ArcGIS.convert({
   "type": "Point",
   "coordinates": [45.5165, -122.6764]
