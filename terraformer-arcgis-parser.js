@@ -187,7 +187,7 @@
   function parse(arcgis){
     var geojson = {};
 
-    if(arcgis.x && arcgis.y){
+    if(arcgis.x != null && arcgis.y != null){
       geojson.type = "Point";
       geojson.coordinates = [arcgis.x, arcgis.y];
     }
