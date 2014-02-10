@@ -17,24 +17,22 @@
 }(this, function(Terraformer) {
   var exports = {};
 
+
+  // checks if the first and last points of a ring are equal and closes the ring
   function closeRing(coordinates) {
-    var first = coordinates[0];
-    var last = coordinates[coordinates.length - 1];
-    var equal = pointsEqual(first, last);
-    console.log(first, last, equal);
-    if (!equal) {
-      coordinates.push(first);
+    if (!pointsEqual(coordinates[0], coordinates[coordinates.length - 1])) {
+      coordinates.push(coordinates[0]);
     }
     return coordinates;
   }
 
+  // checks if 2 x,y points are equal
   function pointsEqual(a, b) {
     for (var i = 0; i < a.length; i++) {
       if (a[i] !== b[i]) {
         return false;
       }
     }
-
     return true;
   }
   // shallow object clone for feature properties and attributes
