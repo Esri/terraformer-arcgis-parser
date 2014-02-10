@@ -31,6 +31,23 @@ describe("ArcGIS Tools", function(){
     });
   });
 
+  it("should convert a GeoJSON Null Island to an ArcGIS Point", function() {
+    var input = {
+      "type": "Point",
+      "coordinates": [0,0]
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+
+    expect(output).toEqual({
+      "x":0,
+      "y":0,
+      "spatialReference":{
+        "wkid":4326
+      }
+    });
+  });
+
   it("should convert a GeoJSON LineString to an ArcGIS Polyline", function() {
     var input = {
       "type": "LineString",
@@ -491,6 +508,21 @@ describe("ArcGIS Tools", function(){
     expect(output).toBeInstanceOfClass(Terraformer.Point);
   });
 
+  it("should parse an ArcGIS Null Island in a Terraformer GeoJSON Point", function() {
+    var input = {
+      "x": 0,
+      "y": 0,
+      "spatialReference": {
+        "wkid": 4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([0,0]);
+    expect(output).toBeInstanceOfClass(Terraformer.Point);
+  });
+
   it("should parse an ArcGIS Polyline in a Terraformer GeoJSON LineString", function() {
     var input = {
       "paths": [
@@ -847,7 +879,6 @@ describe("ArcGIS Tools", function(){
 
     expect(output.type).toEqual("LineString");
     expect(output.coordinates).toEqual([ [ -117.1816137447153, 34.057461545380946 ],[ -117.18159575425025, 34.06266078978142 ], [ -117.18154178285509, 34.06472969326257 ] ]);
-    console.log(output);
   });
 
 });

@@ -228,7 +228,7 @@
     options = options || {};
     options.idAttribute = options.idAttribute || undefined;
 
-    if(arcgis.x && arcgis.y){
+    if(typeof arcgis.x === 'number' && typeof arcgis.y === 'number'){
       geojson.type = "Point";
       geojson.coordinates = [arcgis.x, arcgis.y];
     }
