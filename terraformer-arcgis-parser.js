@@ -238,7 +238,6 @@
       geojson.type = "Feature";
 
       if(arcgis.compressedGeometry){
-        console.log(decompressGeometry(arcgis.compressedGeometry));
         arcgis.geometry = {
           paths: [
             decompressGeometry(arcgis.compressedGeometry)
