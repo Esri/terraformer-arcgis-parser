@@ -17,6 +17,37 @@
 }(this, function(Terraformer) {
   var exports = {};
 
+  // https://github.com/Esri/terraformer-arcgis-parser/issues/10
+  function decompressGeometry(str) {
+    var xDiffPrev = 0;
+    var yDiffPrev = 0;
+    var points = [];
+    var x, y;
+    var strings;
+    var coefficient;
+
+    // Split the string into an array on the + and - characters
+    strings = str.match(/((\+|\-)[^\+\-]+)/g);
+
+    // The first value is the coefficient in base 32
+    coefficient = parseInt(strings[0], 32);
+
+    for (var j = 1; j < strings.length; j += 2) {
+      // j is the offset for the x value
+      // Convert the value from base 32 and add the previous x value
+      x = (parseInt(strings[j], 32) + xDiffPrev);
+      xDiffPrev = x;
+
+      // j+1 is the offset for the y value
+      // Convert the value from base 32 and add the previous y value
+      y = (parseInt(strings[j + 1], 32) + yDiffPrev);
+      yDiffPrev = y;
+
+      points.push([x / coefficient, y / coefficient]);
+    }
+
+    return points;
+  }
 
   // checks if the first and last points of a ring are equal and closes the ring
   function closeRing(coordinates) {
@@ -35,6 +66,7 @@
     }
     return true;
   }
+
   // shallow object clone for feature properties and attributes
   // from http://jsperf.com/cloning-an-object/2
   function clone(obj) {
@@ -220,8 +252,17 @@
       geojson = convertRingsToGeoJSON(arcgis.rings.slice(0));
     }
 
-    if(arcgis.geometry || arcgis.attributes) {
+    if(arcgis.compressedGeometry || arcgis.geometry || arcgis.attributes) {
       geojson.type = "Feature";
+
+      if(arcgis.compressedGeometry){
+        arcgis.geometry = {
+          paths: [
+            decompressGeometry(arcgis.compressedGeometry)
+          ]
+        };
+      }
+
       geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : null;
       geojson.properties = (arcgis.attributes) ? clone(arcgis.attributes) : null;
       if(arcgis.attributes) {
@@ -307,10 +348,15 @@
     return result;
   }
 
+  function parseCompressedGeometry(string){
+    return new Terraformer.LineString(decompressGeometry(string));
+  }
+
   exports.parse   = parse;
   exports.convert = convert;
   exports.toGeoJSON = parse;
   exports.fromGeoJSON = convert;
+  exports.parseCompressedGeometry = parseCompressedGeometry;
 
   return exports;
 }));
