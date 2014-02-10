@@ -743,21 +743,22 @@ describe("ArcGIS Tools", function(){
 
   it("should decompress ArcGIS compressed geometry features into GeoJSON Features", function(){
     var input = {
-      "compressedGeometry": "+1-ce2v1+3r5l7+1+lt+7+8m"
+      "compressedGeometry": "+1m91-66os4+1poms+1+91+3+3j"
     };
 
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.type).toEqual("Feature");
     expect(output.geometry.type).toEqual("LineString");
-    expect(output.geometry.coordinates.length).toEqual(3);
+    expect(output.geometry.coordinates).toEqual([ [ -117.1816137447153, 34.057461545380946 ],[ -117.18159575425025, 34.06266078978142 ], [ -117.18154178285509, 34.06472969326257 ] ]);
   });
 
   it("should decompress ArcGIS compressed geometries into Polylines", function(){
-    var output = Terraformer.ArcGIS.parseCompressedGeometry("+1-ce2v1+3r5l7+1+lt+7+8m");
+    var output = Terraformer.ArcGIS.parseCompressedGeometry("+1m91-66os4+1poms+1+91+3+3j");
 
     expect(output.type).toEqual("LineString");
-    expect(output.coordinates.length).toEqual(3);
+    expect(output.coordinates).toEqual([ [ -117.1816137447153, 34.057461545380946 ],[ -117.18159575425025, 34.06266078978142 ], [ -117.18154178285509, 34.06472969326257 ] ]);
+    console.log(output);
   });
 
 });
