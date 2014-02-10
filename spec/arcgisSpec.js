@@ -57,7 +57,7 @@ describe("ArcGIS Tools", function(){
       ]
     };
 
-    output = Terraformer.ArcGIS.convert(input);
+    var output = Terraformer.ArcGIS.convert(input);
 
     expect(output).toEqual({
       "rings":[
@@ -75,6 +75,28 @@ describe("ArcGIS Tools", function(){
       "coordinates": [
         [ [100.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0] ],
         [ [100.2,0.2],[100.8,0.2],[100.8,0.8],[100.2,0.8],[100.2,0.2] ]
+      ]
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+
+    expect(output).toEqual({
+      "rings": [
+        [ [100, 0], [100, 1], [101, 1], [101, 0], [100, 0] ],
+        [ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]
+      ],
+      "spatialReference":{
+        "wkid":4326
+      }
+    });
+  });
+
+  it("should close ring when converting a GeoJSON Polygon w/ a hole to an ArcGIS Polygon", function() {
+    var input = {
+      "type": "Polygon",
+      "coordinates": [
+        [ [100.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0] ],
+        [ [100.2,0.2],[100.8,0.2],[100.8,0.8],[100.2,0.8] ]
       ]
     };
 
@@ -164,6 +186,33 @@ describe("ArcGIS Tools", function(){
         [
           [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],
           [ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]
+        ]
+      ]
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+    expect(output).toEqual({
+      "spatialReference": {
+        "wkid": 4326
+      },
+      "rings": [
+        [ [102,2],[102,3],[103,3],[103,2],[102,2] ],
+        [ [100.2,0.2],[100.8,0.2],[100.8,0.8],[100.2,0.8],[100.2,0.2] ],
+        [ [100,0],[100,1],[101,1],[101,0],[100,0] ]
+      ]
+    });
+  });
+
+  it("should close rings when converting a GeoJSON MultiPolygon w/ holes to an ArcGIS Polygon", function() {
+    var input = {
+      "type": "MultiPolygon",
+      "coordinates": [
+        [
+          [ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0] ]
+        ],
+        [
+          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0] ],
+          [ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8] ]
         ]
       ]
     };
@@ -474,6 +523,22 @@ describe("ArcGIS Tools", function(){
     expect(output.type).toEqual("Polygon");
   });
 
+  it("should close rings when parsing an ArcGIS Polygon in a Terraformer GeoJSON Polygon", function() {
+    var input = {
+      "rings": [
+        [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625]]
+      ],
+      "spatialReference": {
+        "wkid": 4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([ [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ] ]);
+    expect(output.type).toEqual("Polygon");
+  });
+
   it("should parse an ArcGIS Multipoint in a Terraformer GeoJSON MultiPoint", function() {
     var input = {
       "points":[ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625] ],
@@ -521,6 +586,30 @@ describe("ArcGIS Tools", function(){
     expect(output.coordinates).toEqual([
       [
         [ [-122.63,45.52],[-122.57,45.53],[-122.52,45.5],[-122.49,45.48],[-122.64,45.49],[-122.63,45.52],[-122.63,45.52] ]
+      ],
+      [
+        [ [-83,35],[-83,41],[-74,41],[-74,35],[-83,35] ]
+      ]
+    ]);
+    expect(output.type).toEqual("MultiPolygon");
+  });
+
+  it("should properly close rings when converting an ArcGIS Polygon in a Terraformer GeoJSON MultiPolygon", function() {
+    var input = {
+      "rings":[
+        [[-122.63,45.52],[-122.57,45.53],[-122.52,45.50],[-122.49,45.48],[-122.64,45.49]],
+        [[-83,35],[-74,35],[-74,41],[-83,41]]
+      ],
+      "spatialReference": {
+        "wkid":4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([
+      [
+        [ [-122.63,45.52],[-122.57,45.53],[-122.52,45.5],[-122.49,45.48],[-122.64,45.49],[-122.63,45.52] ]
       ],
       [
         [ [-83,35],[-83,41],[-74,41],[-74,35],[-83,35] ]

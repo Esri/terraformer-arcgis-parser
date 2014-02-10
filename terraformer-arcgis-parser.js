@@ -17,6 +17,26 @@
 }(this, function(Terraformer) {
   var exports = {};
 
+  function closeRing(coordinates) {
+    var first = coordinates[0];
+    var last = coordinates[coordinates.length - 1];
+    var equal = pointsEqual(first, last);
+    console.log(first, last, equal);
+    if (!equal) {
+      coordinates.push(first);
+    }
+    return coordinates;
+  }
+
+  function pointsEqual(a, b) {
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
   // shallow object clone for feature properties and attributes
   // from http://jsperf.com/cloning-an-object/2
   function clone(obj) {
@@ -50,7 +70,7 @@
   function orientRings(poly){
     var output = [];
     var polygon = poly.slice(0);
-    var outerRing = polygon.shift().slice(0);
+    var outerRing = closeRing(polygon.shift().slice(0));
 
     if(!ringIsClockwise(outerRing)){
       outerRing.reverse();
@@ -59,7 +79,7 @@
     output.push(outerRing);
 
     for (var i = 0; i < polygon.length; i++) {
-      var hole = polygon[i].slice(0);
+      var hole = closeRing(polygon[i].slice(0));
       if(ringIsClockwise(hole)){
         hole.reverse();
       }
@@ -120,7 +140,7 @@
 
     // for each ring
     for (var r = 0; r < rings.length; r++) {
-      var ring = rings[r].slice(0);
+      var ring = closeRing(rings[r].slice(0));
 
       // is this ring an outer ring? is it clockwise?
       if(ringIsClockwise(ring)){
@@ -207,7 +227,7 @@
       geojson.geometry = (arcgis.geometry) ? parse(arcgis.geometry) : null;
       geojson.properties = (arcgis.attributes) ? clone(arcgis.attributes) : null;
       if(arcgis.attributes) {
-        geojson.id =  arcgis.attributes[options.idAttribute] || arcgis.attributes.OBJECTID || arcgis.attributes.FID
+        geojson.id =  arcgis.attributes[options.idAttribute] || arcgis.attributes.OBJECTID || arcgis.attributes.FID;
       }
     }
 
