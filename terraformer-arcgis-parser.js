@@ -101,19 +101,22 @@
     var output = [];
     var polygon = poly.slice(0);
     var outerRing = closeRing(polygon.shift().slice(0));
-
-    if(!ringIsClockwise(outerRing)){
-      outerRing.reverse();
-    }
-
-    output.push(outerRing);
-
-    for (var i = 0; i < polygon.length; i++) {
-      var hole = closeRing(polygon[i].slice(0));
-      if(ringIsClockwise(hole)){
-        hole.reverse();
+    if(outerRing.length >= 4){
+      if(!ringIsClockwise(outerRing)){
+        outerRing.reverse();
       }
-      output.push(hole);
+
+      output.push(outerRing);
+
+      for (var i = 0; i < polygon.length; i++) {
+        var hole = closeRing(polygon[i].slice(0));
+        if(hole.length >= 4){
+          if(ringIsClockwise(hole)){
+            hole.reverse();
+          }
+          output.push(hole);
+        }
+      }
     }
 
     return output;
@@ -171,7 +174,9 @@
     // for each ring
     for (var r = 0; r < rings.length; r++) {
       var ring = closeRing(rings[r].slice(0));
-
+      if(ring.length < 4){
+        continue;
+      }
       // is this ring an outer ring? is it clockwise?
       if(ringIsClockwise(ring)){
         var polygon = [ ring ];
