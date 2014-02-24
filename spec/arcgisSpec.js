@@ -108,6 +108,27 @@ describe("ArcGIS Tools", function(){
     });
   });
 
+  it("should strip invalid rings when converting a GeoJSON Polygon to and ArcGIS Polygon", function() {
+    var input = {
+      "type": "Polygon",
+      "coordinates": [
+        [ [100.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0] ],
+        [ [100.2,0.2],[100.8,0.2],[100.2,0.2] ]
+      ]
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+
+    expect(output).toEqual({
+      "rings": [
+        [ [100, 0], [100, 1], [101, 1], [101, 0], [100, 0] ]
+      ],
+      "spatialReference":{
+        "wkid":4326
+      }
+    });
+  });
+
   it("should close ring when converting a GeoJSON Polygon w/ a hole to an ArcGIS Polygon", function() {
     var input = {
       "type": "Polygon",
@@ -624,6 +645,25 @@ describe("ArcGIS Tools", function(){
       ]
     ]);
     expect(output.type).toEqual("MultiPolygon");
+  });
+
+  it("should strip invalid rings when converting ArcGIS Polygons to GeoJSON", function() {
+    var input = {
+      "rings":[
+        [[-122.63,45.52],[-122.57,45.53],[-122.52,45.50],[-122.49,45.48],[-122.64,45.49],[-122.63,45.52],[-122.63,45.52]],
+        [[-83,35],[-74,35],[-83,35]] // closed but too small
+      ],
+      "spatialReference": {
+        "wkid":4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([
+      [ [-122.63,45.52],[-122.57,45.53],[-122.52,45.5],[-122.49,45.48],[-122.64,45.49],[-122.63,45.52],[-122.63,45.52] ]
+    ]);
+    expect(output.type).toEqual("Polygon");
   });
 
   it("should properly close rings when converting an ArcGIS Polygon in a Terraformer GeoJSON MultiPolygon", function() {
