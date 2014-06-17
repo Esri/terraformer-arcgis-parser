@@ -157,7 +157,7 @@
   }
 
   function coordinatesContainCoordinates(outer, inner){
-    var intersects = Terraformer.Tools.arrayIntersectsArray(outer, inner);
+    var intersects = Terraformer.Tools.arraysIntersectArrays(outer, inner);
     var contains = Terraformer.Tools.coordinatesContainPoint(outer, inner[0]);
     if(!intersects && contains){
       return true;
@@ -236,6 +236,12 @@
     if(typeof arcgis.x === 'number' && typeof arcgis.y === 'number'){
       geojson.type = "Point";
       geojson.coordinates = [arcgis.x, arcgis.y];
+      if (arcgis.z || arcgis.m){
+        geojson.coordinates.push(arcgis.z);
+      }
+      if (arcgis.m){
+        geojson.coordinates.push(arcgis.m);
+      }
     }
 
     if(arcgis.points){
@@ -307,6 +313,12 @@
     case "Point":
       result.x = geojson.coordinates[0];
       result.y = geojson.coordinates[1];
+      if(geojson.coordinates[2]) {
+        result.z = geojson.coordinates[2];
+      }
+      if(geojson.coordinates[3]) {
+        result.m = geojson.coordinates[3];
+      }
       result.spatialReference = spatialReference;
       break;
     case "MultiPoint":

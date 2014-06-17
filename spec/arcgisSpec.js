@@ -30,6 +30,42 @@ describe("ArcGIS Tools", function(){
       }
     });
   });
+  it("should convert a GeoJSON Point with Z to an ArcGIS Point with Z", function() {
+    var input = {
+      "type": "Point",
+      "coordinates": [-58.7109375,47.4609375, 100]
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+
+    expect(output).toEqual({
+      "x":-58.7109375,
+      "y":47.4609375,
+      "z": 100,
+      "spatialReference":{
+        "wkid":4326
+      }
+    });
+  });
+
+  it("should convert a GeoJSON Point with Z and M to an ArcGIS Point with Z and M", function() {
+    var input = {
+      "type": "Point",
+      "coordinates": [-58.7109375,47.4609375, 100, 50]
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+
+    expect(output).toEqual({
+      "x":-58.7109375,
+      "y":47.4609375,
+      "z": 100,
+      "m": 50,
+      "spatialReference":{
+        "wkid":4326
+      }
+    });
+  });
 
   it("should convert a GeoJSON Null Island to an ArcGIS Point", function() {
     var input = {
@@ -526,6 +562,55 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([-66.796875,20.0390625]);
+    expect(output).toBeInstanceOfClass(Terraformer.Point);
+  });
+
+  it("should parse an ArcGIS Point with Z in a Terraformer GeoJSON Point with Z", function() {
+    var input = {
+      "x": -66.796875,
+      "y": 20.0390625,
+      "z": 100,
+      "spatialReference": {
+        "wkid": 4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([-66.796875,20.0390625, 100]);
+    expect(output).toBeInstanceOfClass(Terraformer.Point);
+  });
+
+  it("should parse an ArcGIS Point with Z and M in a Terraformer GeoJSON Point with Z and M", function() {
+    var input = {
+      "x": -66.796875,
+      "y": 20.0390625,
+      "z": 100,
+      "m": 50,
+      "spatialReference": {
+        "wkid": 4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([-66.796875,20.0390625, 100, 50]);
+    expect(output).toBeInstanceOfClass(Terraformer.Point);
+  });
+
+  it("should parse an ArcGIS Point with M in a Terraformer GeoJSON Point with M", function() {
+    var input = {
+      "x": -66.796875,
+      "y": 20.0390625,
+      "m": 50,
+      "spatialReference": {
+        "wkid": 4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([-66.796875,20.0390625, undefined, 50]);
     expect(output).toBeInstanceOfClass(Terraformer.Point);
   });
 
