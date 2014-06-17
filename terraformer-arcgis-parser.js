@@ -157,7 +157,7 @@
   }
 
   function coordinatesContainCoordinates(outer, inner){
-    var intersects = Terraformer.Tools.arrayIntersectsArray(outer, inner);
+    var intersects = Terraformer.Tools.arraysIntersectArrays(outer, inner);
     var contains = Terraformer.Tools.coordinatesContainPoint(outer, inner[0]);
     if(!intersects && contains){
       return true;

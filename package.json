@@ -1,6 +1,6 @@
 {
   "name": "terraformer-arcgis-parser",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "ArcGIS JSON format parser and converter",
   "main": "terraformer-arcgis-parser.js",
   "directories": {
@@ -22,7 +22,7 @@
   "author": "Patrick Arlt <patrick.arlt@gmail.com> (http://patrickarlt.com)",
   "license": "MIT",
   "dependencies": {
-    "terraformer": "~1.0.1"
+    "terraformer": "~1.0.4"
   },
   "devDependencies": {
     "grunt": "0.4.x",
