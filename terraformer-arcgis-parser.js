@@ -346,7 +346,9 @@
         result.geometry = convert(geojson.geometry, options);
       }
       result.attributes = (geojson.properties) ? clone(geojson.properties) : {};
-      result.attributes[idAttribute] = geojson.id;
+      if(geojson.id) {
+        result.attributes[idAttribute] = geojson.id;
+      }
       break;
     case "FeatureCollection":
       result = [];
