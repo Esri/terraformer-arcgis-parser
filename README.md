@@ -29,8 +29,8 @@ var ArcGIS = require('terraformer-arcgis-parser');
 
 // parse ArcGIS JSON, convert it to a Terraformer.Primitive (GeoJSON)
 var primitive = ArcGIS.parse({
-    x:"-122.6764",
-    y:"45.5165",
+    x:-122.6764,
+    y:45.5165,
     spatialReference: {
       wkid: 4326
     }
@@ -53,8 +53,8 @@ var point = ArcGIS.convert({
   <!-- Use it! -->
   <script>
     var primitive = Terraformer.ArcGIS.parse({
-      x:"-122.6764",
-      y:"45.5165",
+      x:-122.6764,
+      y:45.5165,
       spatialReference: {
         wkid: 4326
       }
