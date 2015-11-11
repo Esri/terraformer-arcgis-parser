@@ -280,6 +280,14 @@
         geojson.id =  arcgis.attributes[options.idAttribute] || arcgis.attributes.OBJECTID || arcgis.attributes.FID;
       }
     }
+    //FeatureSet to FeatureCollection
+    if (arcgis.features) {
+        geojson.type = "FeatureCollection";
+        geojson.features = [];
+        arcgis.features.map(function (elem, index) {
+            geojson.features.push(parse(elem));
+        });
+    }
 
     var inputSpatialReference = (arcgis.geometry) ? arcgis.geometry.spatialReference : arcgis.spatialReference;
 
