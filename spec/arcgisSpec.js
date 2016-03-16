@@ -304,6 +304,24 @@ describe("ArcGIS Tools", function(){
     });
   });
 
+  it('should still parse holes outside the outer rings', function(){
+    var input = {
+      "rings": [
+        [ [-122.45,45.63], [-122.45,45.68], [-122.39,45.68], [-122.39,45.63], [-122.45,45.63] ],
+        [ [-122.46,45.64], [-122.4,45.64], [-122.4,45.66], [-122.46,45.66], [-122.46,45.64] ]
+      ]
+    }
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    var expected = [
+      [ [-122.45,45.63], [-122.45,45.68], [-122.39,45.68], [-122.39,45.63], [-122.45,45.63] ],
+      [ [-122.46,45.64], [-122.4,45.64], [-122.4,45.66], [-122.46,45.66], [-122.46,45.64] ]
+    ];
+
+    expect(output.coordinates).toEqual(expected);
+  });
+
   it("should convert a GeoJSON Feature into an ArcGIS Feature", function(){
     var input = {
       "type":"Feature",
