@@ -31,17 +31,17 @@ var ArcGIS = require('terraformer-arcgis-parser');
 
 // parse ArcGIS JSON, convert it to a Terraformer.Primitive (GeoJSON)
 var primitive = ArcGIS.parse({
-    x:-122.6764,
-    y:45.5165,
-    spatialReference: {
-      wkid: 4326
+    'x':-122.6764,
+    'y':45.5165,
+    'spatialReference': {
+      'wkid': 4326
     }
   });
 
 // take a Terraformer.Primitive or GeoJSON and convert it back to ArcGIS JSON
 var point = ArcGIS.convert({
-  "type": "Point",
-  "coordinates": [45.5165, -122.6764]
+  'type': "Point",
+  'coordinates': [45.5165, -122.6764]
 });
 ```
 
@@ -64,8 +64,8 @@ var point = ArcGIS.convert({
 
     // take a Terraformer.Primitive or GeoJSON and convert it to ArcGIS JSON
     var point = Terraformer.ArcGIS.convert({
-      "type": "Point",
-      "coordinates": [45.5165, -122.6764]
+      'type': "Point",
+      'coordinates': [45.5165, -122.6764]
     });
   </script>
   ```
