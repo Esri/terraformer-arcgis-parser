@@ -55,10 +55,10 @@ var point = ArcGIS.convert({
   <!-- Use it! -->
   <script>
     var primitive = Terraformer.ArcGIS.parse({
-      x:-122.6764,
-      y:45.5165,
-      spatialReference: {
-        wkid: 4326
+      'x':-122.6764,
+      'y':45.5165,
+      'spatialReference': {
+        'wkid': 4326
       }
     });
 
