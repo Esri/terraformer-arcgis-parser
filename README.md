@@ -1,5 +1,7 @@
 # Terraformer ArcGIS JSON Parser
 
+[![Build Status](https://travis-ci.org/Esri/terraformer-arcgis-parser.svg?branch=master)](https://travis-ci.org/Esri/terraformer-arcgis-parser)
+
 This plugin handles 2 way conversion between [GeoJSON](http://geojson.org/geojson-spec.html) and the [ArcGIS Geometry](http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html) format used by Esri.
 
 This package is part of the [Terraformer](http://terraformer.io) project.
@@ -46,10 +48,10 @@ var point = ArcGIS.convert({
 ```html
   <!-- Load the main Terraformer library -->
   <script src="terraformer.min.js" type="text/javascript"></script>
-  
+
   <!-- Load the ArcGIS Parser -->
   <script src="terraformer-arcgis-parser.min.js" type="text/javascript"></script>
-  
+
   <!-- Use it! -->
   <script>
     var primitive = Terraformer.ArcGIS.parse({
