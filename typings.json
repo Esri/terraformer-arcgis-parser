@@ -1,0 +1,5 @@
+{
+  "name": "terraformer-arcgis-parser",
+  "main": "terraformer-arcgis-parser.d.ts",
+  "dependencies": {}
+}
