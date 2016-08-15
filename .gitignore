@@ -19,3 +19,7 @@ Icon
 #Node
 node_modules
 npm-debug.log
+
++# typescript
+typings/**
+test.js
