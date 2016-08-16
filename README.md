@@ -2,9 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Esri/terraformer-arcgis-parser.svg?branch=master)](https://travis-ci.org/Esri/terraformer-arcgis-parser)
 
-This plugin handles 2 way conversion between [GeoJSON](http://geojson.org/geojson-spec.html) and the [ArcGIS Geometry](http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html) format used by Esri.
-
-This package is part of the [Terraformer](http://terraformer.io) project.
+> Two way conversion between [GeoJSON](http://geojson.org/geojson-spec.html) and [ArcGIS Geometry](http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html). Part of the [Terraformer](http://terraformer.io) project.
 
 ## Installing
 

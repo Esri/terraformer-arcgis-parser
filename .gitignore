@@ -20,6 +20,9 @@ Icon
 node_modules
 npm-debug.log
 
-+# typescript
+# built (we should really stop committing built output to source control)
+# terraformer-arcgis-parser.min.js
+
+# typescript
 typings/**
 test.js
