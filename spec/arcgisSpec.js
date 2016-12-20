@@ -964,23 +964,17 @@ describe("ArcGIS Tools", function(){
     expect(output.properties.foo).toEqual("bar");
   });
 
-  it("should convert to WGS84/4326 while parsing", function(){
+  it("should not reproject to WGS84/4326 while parsing", function(){
     var input = {
       "x": -13580977.876779145,
       "y": 5621521.486191948,
       "spatialReference": {
-        "wkid": 102100
+        "wkid": 3857
       }
     };
 
-    var expectedOutput = {
-      "type": "Point",
-      "coordinates": [-122, 45]
-    };
-
     var output = Terraformer.ArcGIS.parse(input);
-
-    expect(output.coordinates).toEqual([-121.99999999999794, 44.99999999999924]);
+    expect(output.coordinates).toEqual([-13580977.876779145, 5621521.486191948]);
   });
 
   it("should not modify the original ArcGIS Geometry", function(){

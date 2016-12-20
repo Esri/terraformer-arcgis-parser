@@ -307,13 +307,6 @@
       }
     }
 
-    var inputSpatialReference = (arcgis.geometry) ? arcgis.geometry.spatialReference : arcgis.spatialReference;
-
-    //convert spatial ref if needed
-    if(inputSpatialReference && inputSpatialReference.wkid === 102100){
-      geojson = Terraformer.toGeographic(geojson);
-    }
-
     return new Terraformer.Primitive(geojson);
   }
 
