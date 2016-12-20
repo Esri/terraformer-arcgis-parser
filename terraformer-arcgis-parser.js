@@ -259,6 +259,10 @@
     options = options || {};
     options.idAttribute = options.idAttribute || undefined;
 
+    if (arcgis.spatialReference && (arcgis.spatialReference.wkid === 3857 || arcgis.spatialReference.wkid === 102100)) {
+      geojson.crs = Terraformer.MercatorCRS;
+    }
+
     if(typeof arcgis.x === 'number' && typeof arcgis.y === 'number'){
       geojson.type = "Point";
       geojson.coordinates = [arcgis.x, arcgis.y];
