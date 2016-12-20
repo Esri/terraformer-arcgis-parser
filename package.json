@@ -30,7 +30,7 @@
     "grunt": "0.4.x",
     "grunt-complexity": "~0.1.3",
     "grunt-contrib-jasmine": "~0.4.2",
-    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-uglify": "~2.0.0",
     "grunt-jasmine-node": "https://github.com/magicmoose/grunt-jasmine-node/tarball/master",
     "grunt-s3": "~0.2.0-alpha.3",
     "grunt-template-jasmine-istanbul": "~0.2.4",
