@@ -569,7 +569,7 @@ describe("ArcGIS Tools", function(){
     expect(original).toEqual(JSON.stringify(primitive));
   });
 
-  it("if the GeoJSON includes a custom crs, output spatial reference shouldnt be set", function() {
+  it("if the GeoJSON includes a custom crs, output spatial reference should not be set", function() {
     var input = {
       "type": "Point",
       "coordinates": [123,456],
@@ -583,6 +583,28 @@ describe("ArcGIS Tools", function(){
 
     var output = Terraformer.ArcGIS.convert(input);
 
+    expect(output).toEqual({
+      "x": 123,
+      "y": 456,
+      "spatialReference": null
+    });
+  });
+
+  it("if the GeoJSON includes a custom linked crs, output spatial reference should not be set", function() {
+    var input = {
+      "type": "Point",
+      "coordinates": [123,456],
+      "crs": {
+        "type": "link",
+        "properties": {
+          "href": "http://spatialreference.org/ref/sr-org/7/ogcwkt/",
+          "type": "ogcwkt"
+        }
+      },
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+    console.log(output);
     expect(output).toEqual({
       "x": 123,
       "y": 456,
