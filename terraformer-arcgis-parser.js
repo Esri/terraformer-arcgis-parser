@@ -326,8 +326,8 @@
 
     if(options.sr){
       spatialReference = { wkid: options.sr };
-    } else if (geojson && geojson.crs === Terraformer.MercatorCRS) {
-      spatialReference = { wkid: 102100 };
+    } else if (geojson && geojson.crs && geojson.crs.properties.name != "urn:ogc:def:crs:OGC:1.3:CRS84") {
+      spatialReference = null;
     } else {
       spatialReference = { wkid: 4326 };
     }

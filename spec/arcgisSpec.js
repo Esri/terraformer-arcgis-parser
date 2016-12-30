@@ -30,6 +30,7 @@ describe("ArcGIS Tools", function(){
       }
     });
   });
+
   it("should convert a GeoJSON Point with Z to an ArcGIS Point with Z", function() {
     var input = {
       "type": "Point",
@@ -566,6 +567,49 @@ describe("ArcGIS Tools", function(){
     Terraformer.ArcGIS.convert(primitive);
 
     expect(original).toEqual(JSON.stringify(primitive));
+  });
+
+  it("if the GeoJSON includes a custom crs, output spatial reference should not be set", function() {
+    var input = {
+      "type": "Point",
+      "coordinates": [123,456],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "urn:ogc:def:crs:EPSG::2913"
+        }
+      }
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+
+    expect(output).toEqual({
+      "x": 123,
+      "y": 456,
+      "spatialReference": null
+    });
+  });
+
+  it("if the GeoJSON includes a custom linked crs, output spatial reference should not be set", function() {
+    var input = {
+      "type": "Point",
+      "coordinates": [123,456],
+      "crs": {
+        "type": "link",
+        "properties": {
+          "href": "http://spatialreference.org/ref/sr-org/7/ogcwkt/",
+          "type": "ogcwkt"
+        }
+      },
+    };
+
+    var output = Terraformer.ArcGIS.convert(input);
+    console.log(output);
+    expect(output).toEqual({
+      "x": 123,
+      "y": 456,
+      "spatialReference": null
+    });
   });
 
   it("should parse an ArcGIS Point in a Terraformer GeoJSON Point", function() {
