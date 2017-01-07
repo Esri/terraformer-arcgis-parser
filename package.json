@@ -7,6 +7,8 @@
     "test": "test"
   },
   "scripts": {
+    "convert": "node ./terraformer-arcgis-fileparser.js convert",
+    "parse": "node ./terraformer-arcgis-fileparser.js parse",
     "test": "grunt test",
     "test:ts": "typings install && tsc"
   },
