@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Copyright 2017 by Graham Freeman Seyffert
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-'use strict';
 const fs = require('fs');
 let ArcGIS;
 try { ArcGIS = require('./terraformer-arcgis-parser.js'); }
@@ -73,32 +73,34 @@ function tryRead(fd, buff, offset, length) {
   );
 }
 
-function convertFile(fileData) {
+function convertFile(fileData, operation) {
   const buffString = fileData.data.toString();
   const toConvert = JSON.parse(buffString);
     
-  let converted = [], newFileData = {};
+  let converted = [];
+  let newFileData = {};
   if (operation === 'convert') {
     converted = ArcGIS.convert(toConvert);
     newFileData = converted;
   } else if (operation === 'parse') {
-    newFileData.collectionType = 'FeatureCollection';
+    newFileData.type = 'FeatureCollection';
     let convertedItem;
     toConvert.forEach(arcGIS => {
       if (arcGIS.rings ||
           arcGIS.paths ||
           arcGIS.points ||
           (arcGIS.x && arcGIS.y)) {
-        newFileData.collectionType = 'GeometryCollection';
+        newFileData.type = 'GeometryCollection';
       }
       convertedItem = ArcGIS.parse(arcGIS);
       converted.push(convertedItem);
     });
-    if (newFileData.collectionType === 'GeometryCollection') {
+    if (newFileData.type === 'GeometryCollection') {
       newFileData.geometries = converted;
     } else {
       newFileData.features = converted;
     }
+    // console.log(converted)
   }
 
   let fileNameSplit = fileData.fileName.split('.');
@@ -157,7 +159,7 @@ if (!fileName) {
 // Kickoff
 openFile(fileName)
 .then(file => { return readFile(file); })
-.then(fileData => { return convertFile(fileData); })
+.then(fileData => { return convertFile(fileData, operation); })
 .then(output => { return writeFile(output); })
 .then(fd => { return closeFile(fd); })
 .catch(err => { return console.log(err); });
