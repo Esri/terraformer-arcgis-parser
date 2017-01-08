@@ -1,6 +1,5 @@
 'use strict';
 const fs = require('fs');
-
 let ArcGIS;
 try { ArcGIS = require('./terraformer-arcgis-parser.js'); }
 catch (err) {
@@ -18,7 +17,7 @@ function openFile(fileName) {
         const fileData = {
           fd:       fd,
           fileName: fileName,
-          stats:    stats
+          size:     stats.size
         };
         return resolve(fileData);
       });
@@ -27,9 +26,9 @@ function openFile(fileName) {
 }
 
 function readFile(file) {
-  const buffLen = file.stats.size;
-  const chunkSize = file.stats.size < 1024 ? file.stats.size
-                                           : 1024;
+  const buffLen = file.size;
+  const chunkSize = buffLen < 1024 ? buffLen
+                                   : 1024;
   let buff = Buffer.alloc(buffLen);
   return tryRead(file.fd, buff, 0, chunkSize)
   .then((fileData) => {
@@ -38,20 +37,16 @@ function readFile(file) {
   });
 }
 
-// Doing this in a while loop will err on Windows (but works on OS X), as Node 
-// will continue to increment the loop counters while items are being read,
-// resulting in a malformed JSON object.
 function tryRead(fd, buff, offset, length) {
   return new Promise((resolve, reject) => {
-    fs.read(fd, buff, offset, length, null,
-            (err, bytesRead, buffer) => {
-              if (err) return reject(err);
-              const buffLen = buffer.length;
-              offset += bytesRead;
-              if (offset >= buffLen) return resolve(buff);
-              if ((offset + length) >= buffLen) length = buffLen - offset;
-              return resolve();
-            });
+    fs.read(fd, buff, offset, length, null, (err, bytesRead, buffer) => {
+      if (err) return reject(err);
+      const buffLen = buffer.length;
+      offset += bytesRead;
+      if (offset >= buffLen) return resolve(buff);
+      if ((offset + length) >= buffLen) length = buffLen - offset;
+      return resolve();
+    });
   })
   .then(
     (fullBuffer) => {
@@ -61,9 +56,6 @@ function tryRead(fd, buff, offset, length) {
     (err) => { throw err; }
   );
 }
-
-let operation = process.argv[2];
-if (!operation) operation = 'convert';
 
 function convertFile(fileData) {
   const buffString = fileData.data.toString();
@@ -77,7 +69,10 @@ function convertFile(fileData) {
     newFileData.collectionType = 'FeatureCollection';
     let convertedItem;
     toConvert.forEach(arcGIS => {
-      if (arcGIS.rings || arcGIS.paths || arcGIS.points) {
+      if (arcGIS.rings ||
+          arcGIS.paths ||
+          arcGIS.points ||
+          (arcGIS.x && arcGIS.y)) {
         newFileData.collectionType = 'GeometryCollection';
       }
       convertedItem = ArcGIS.parse(arcGIS);
@@ -117,7 +112,7 @@ function writeFile(output) {
   })
   .then(
     () => {
-      console.log('Results written to ' + output.fileName);
+      console.log('Result written to ' + output.fileName);
       return output.fd;
     },
     (err) => { throw err; }
@@ -134,8 +129,14 @@ function closeFile(fd) {
   });
 }
 
+let operation = process.argv[2];
+if (!operation) operation = 'convert';
+
 const fileName = process.argv[3];
-if (!fileName) return console.log('Please specify a file to read from.');
+if (!fileName) {
+  console.log('Please specify a file to ' + operation + '.');
+  return;
+}
 
 // Kickoff
 openFile(fileName)
@@ -143,4 +144,4 @@ openFile(fileName)
 .then(fileData => { return convertFile(fileData); })
 .then(output => { return writeFile(output); })
 .then(fd => { return closeFile(fd); })
-.catch(err => { console.log('in catch'); return console.log(err); });
+.catch(err => { return console.log(err); });
