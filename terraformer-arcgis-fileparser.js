@@ -77,7 +77,7 @@ function convertFile(fileData) {
     newFileData.collectionType = 'FeatureCollection';
     let convertedItem;
     toConvert.forEach(arcGIS => {
-      if (arcGIS.rings || arcGIS.paths) {
+      if (arcGIS.rings || arcGIS.paths || arcGIS.points) {
         newFileData.collectionType = 'GeometryCollection';
       }
       convertedItem = ArcGIS.parse(arcGIS);
