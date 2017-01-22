@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 const fs = require('fs');
 let ArcGIS;
 try { ArcGIS = require('./terraformer-arcgis-parser.js'); }
 catch (err) {
   const message = 'Could not load Terraformer - please make sure '
-                  + 'to run \'npm install\' before running.'
+                + 'to run \'npm install\' before running.'
   return console.log(message, err);
 }
 
@@ -35,7 +34,7 @@ function openFile(fileName) {
           fileName: fileName,
           size:     stats.size
         };
-        return resolve(fileData);
+        resolve(fileData);
       });
     });
   });
@@ -45,7 +44,7 @@ function readFile(file) {
   const buffLen = file.size;
   const chunkSize = buffLen < 1024 ? buffLen
                                    : 1024;
-  let buff = Buffer.alloc(buffLen);
+  const buff = Buffer.alloc(buffLen);
   return tryRead(file.fd, buff, 0, chunkSize)
   .then((fileData) => {
     fileData.fileName = file.fileName;
@@ -53,6 +52,9 @@ function readFile(file) {
   });
 }
 
+// Reads file by chunkSize at a time.
+// Will resolve with the buffer if it's full, otherwise will
+// resolve with nothing, indicating another read should happen.
 function tryRead(fd, buff, offset, length) {
   return new Promise((resolve, reject) => {
     fs.read(fd, buff, offset, length, null, (err, bytesRead, buffer) => {
@@ -74,45 +76,41 @@ function tryRead(fd, buff, offset, length) {
 }
 
 function convertFile(fileData, operation) {
-  const buffString = fileData.data.toString();
-  const toConvert = JSON.parse(buffString);
-    
-  let converted = [];
+  const toConvert = JSON.parse(fileData.data.toString());
   let newFileData = {};
   if (operation === 'convert') {
-    converted = ArcGIS.convert(toConvert);
-    newFileData = converted;
+    const converted = ArcGIS.convert(toConvert);
+    newFileData = '{"features": ' + JSON.stringify(converted, null, 2) + '}';
   } else if (operation === 'parse') {
-    newFileData.type = 'FeatureCollection';
-    let convertedItem;
-    toConvert.forEach(arcGIS => {
-      if (arcGIS.rings ||
-          arcGIS.paths ||
-          arcGIS.points ||
-          (arcGIS.x && arcGIS.y)) {
-        newFileData.type = 'GeometryCollection';
+    let isGeoCollection;
+    const converted = toConvert.features.map(arcGIS => {
+      if (!isGeoCollection) {
+        isGeoCollection = arcGIS.rings
+                        || arcGIS.paths
+                        || arcGIS.points
+                        || (arcGIS.x && arcGIS.y);
       }
-      convertedItem = ArcGIS.parse(arcGIS);
-      converted.push(convertedItem);
+      return ArcGIS.parse(arcGIS);
     });
+    newFileData.type = isGeoCollection ? 'GeometryCollection' 
+                                       : 'FeatureCollection';
     if (newFileData.type === 'GeometryCollection') {
       newFileData.geometries = converted;
     } else {
       newFileData.features = converted;
     }
-    // console.log(converted)
+    newFileData = JSON.stringify(newFileData, null, 2);
   }
-
+  // Considers file paths may be relative or not in CWD
   let fileNameSplit = fileData.fileName.split('.');
   let fileNameWithoutExtension = fileNameSplit[fileNameSplit.length - 2];
   fileNameSplit = fileNameWithoutExtension.split('/');
   fileNameWithoutExtension = fileNameSplit[fileNameSplit.length - 1];
-
-  let outputExtension = '.geojson';
-  if (operation === 'convert') outputExtension = '.arcjson';
+  const outputExtension = operation === 'convert' ? '.json'
+                                                  : '.geojson';
   const outputFileName = fileNameWithoutExtension + outputExtension;
   const output = {
-    data:     JSON.stringify(newFileData, null, 2),
+    data:     newFileData,
     fd:       fileData.fd,
     fileName: outputFileName
   };
@@ -121,30 +119,15 @@ function convertFile(fileData, operation) {
 
 function writeFile(output) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(output.fileName,
-                 output.data,
-                 (err) => {
-                   if (err) return reject(err);
-                   return resolve();
-                 });
+    
   })
   .then(
     () => {
-      console.log('Result written to ' + output.fileName);
+      console.log();
       return output.fd;
     },
     (err) => { throw err; }
   );
-}
-
-function closeFile(fd) {
-  return new Promise((resolve, reject) => {
-    fs.close(fd, (err) => {
-      if (err) return reject(err);
-      console.log(fileName + ' closed.');
-      return resolve();
-    });
-  });
 }
 
 let operation = process.argv[2];
@@ -152,14 +135,20 @@ if (!operation) operation = 'convert';
 
 const fileName = process.argv[3];
 if (!fileName) {
-  console.log('Please specify a file to ' + operation + '.');
-  return;
+  return console.log('Please specify a file to ' + operation + '.');
 }
 
 // Kickoff
 openFile(fileName)
 .then(file => { return readFile(file); })
 .then(fileData => { return convertFile(fileData, operation); })
-.then(output => { return writeFile(output); })
-.then(fd => { return closeFile(fd); })
+.then(output => {
+  fs.writeFile(output.fileName, output.data, (err) => {
+    if (err) return console.log(err);
+    fs.close(output.fd, (err) => {
+      if (err) console.log(err);
+      else console.log('Result written to ' + output.fileName);
+    });
+  });
+ })
 .catch(err => { return console.log(err); });
