@@ -117,19 +117,6 @@ function convertFile(fileData, operation) {
   return output;
 }
 
-function writeFile(output) {
-  return new Promise((resolve, reject) => {
-    
-  })
-  .then(
-    () => {
-      console.log();
-      return output.fd;
-    },
-    (err) => { throw err; }
-  );
-}
-
 let operation = process.argv[2];
 if (!operation) operation = 'convert';
 
