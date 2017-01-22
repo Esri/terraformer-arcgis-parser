@@ -77,40 +77,38 @@ function tryRead(fd, buff, offset, length) {
 
 function convertFile(fileData, operation) {
   const toConvert = JSON.parse(fileData.data.toString());
-  let newFileData = {};
+  const newFileData = {};
+  let outputFileExtension;
   if (operation === 'convert') {
+    outputFileExtension = '.json';
     const converted = ArcGIS.convert(toConvert);
-    newFileData = '{"features": ' + JSON.stringify(converted, null, 2) + '}';
+    newFileData.features = converted;
   } else if (operation === 'parse') {
-    let isGeoCollection;
-    const converted = toConvert.features.map(arcGIS => {
-      if (!isGeoCollection) {
-        isGeoCollection = arcGIS.rings
-                        || arcGIS.paths
-                        || arcGIS.points
-                        || (arcGIS.x && arcGIS.y);
-      }
-      return ArcGIS.parse(arcGIS);
+    outputFileExtension = '.geojson';
+    const firstFeature = toConvert.features[0];
+    const isGeoCollection = firstFeature.rings
+                          || firstFeature.paths
+                          || firstFeature.points
+                          || (firstFeature.x && firstFeature.y);
+    const converted = toConvert.features.map(feature => {
+      return ArcGIS.parse(feature);
     });
-    newFileData.type = isGeoCollection ? 'GeometryCollection' 
-                                       : 'FeatureCollection';
-    if (newFileData.type === 'GeometryCollection') {
+    if (isGeoCollection) {
+      newFileData.type = 'GeometryCollection';
       newFileData.geometries = converted;
     } else {
+      newFileData.type = 'FeatureCollection';
       newFileData.features = converted;
     }
-    newFileData = JSON.stringify(newFileData, null, 2);
   }
   // Considers file paths may be relative or not in CWD
   let fileNameSplit = fileData.fileName.split('.');
   let fileNameWithoutExtension = fileNameSplit[fileNameSplit.length - 2];
   fileNameSplit = fileNameWithoutExtension.split('/');
   fileNameWithoutExtension = fileNameSplit[fileNameSplit.length - 1];
-  const outputExtension = operation === 'convert' ? '.json'
-                                                  : '.geojson';
-  const outputFileName = fileNameWithoutExtension + outputExtension;
+  const outputFileName = fileNameWithoutExtension + outputFileExtension;
   const output = {
-    data:     newFileData,
+    data:     JSON.stringify(newFileData, null, 2),
     fd:       fileData.fd,
     fileName: outputFileName
   };
