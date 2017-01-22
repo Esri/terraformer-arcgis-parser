@@ -16,7 +16,7 @@
  */
 const fs = require('fs');
 let ArcGIS;
-try { ArcGIS = require('../terraformer-arcgis-parser.js'); }
+try { ArcGIS = require('terraformer-arcgis-parser'); }
 catch (err) {
   const message = 'Could not load Terraformer - please make sure '
                 + 'to run \'npm install\' before running.'
