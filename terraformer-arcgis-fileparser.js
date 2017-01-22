@@ -81,8 +81,7 @@ function convertFile(fileData, operation) {
   let outputFileExtension;
   if (operation === 'convert') {
     outputFileExtension = '.json';
-    const converted = ArcGIS.convert(toConvert);
-    newFileData.features = converted;
+    newFileData.features = ArcGIS.convert(toConvert);
   } else if (operation === 'parse') {
     outputFileExtension = '.geojson';
     const firstFeature = toConvert.features[0];
@@ -90,9 +89,7 @@ function convertFile(fileData, operation) {
                           || firstFeature.paths
                           || firstFeature.points
                           || (firstFeature.x && firstFeature.y);
-    const converted = toConvert.features.map(feature => {
-      return ArcGIS.parse(feature);
-    });
+    const converted = toConvert.features.map(feature => ArcGIS.parse(feature));
     if (isGeoCollection) {
       newFileData.type = 'GeometryCollection';
       newFileData.geometries = converted;
