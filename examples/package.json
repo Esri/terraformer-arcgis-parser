@@ -1,0 +1,29 @@
+{
+  "name": "terraformer-arcgis-fileparser",
+  "version": "1.0.0",
+  "description": "A utility that uses terraformer-arcgis-parser to convert .geojson files to ArcGIS formatted .json files & vice-versa.",
+  "main": "terraformer-arcgis-fileparser.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "convert": "node ./terraformer-arcgis-fileparser.js convert",
+    "parse": "node ./terraformer-arcgis-fileparser.js parse"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Esri/terraformer-arcgis-parser.git"
+  },
+  "keywords": [
+    "ArcGIS",
+    "Esri",
+    "GIS",
+    "Geography"
+  ],
+  "author": "Graham Seyffert <gseyffert@gmail.com>",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "terraformer-arcgis-parser": "~1.0.5",
+    "terraformer": "~1.0.7"
+  }
+}
