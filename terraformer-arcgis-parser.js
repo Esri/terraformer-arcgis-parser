@@ -259,6 +259,10 @@
     options = options || {};
     options.idAttribute = options.idAttribute || undefined;
 
+    if (arcgis.spatialReference && (arcgis.spatialReference.wkid === 3857 || arcgis.spatialReference.wkid === 102100)) {
+      geojson.crs = Terraformer.MercatorCRS;
+    }
+
     if(typeof arcgis.x === 'number' && typeof arcgis.y === 'number'){
       geojson.type = "Point";
       geojson.coordinates = [arcgis.x, arcgis.y];
@@ -305,13 +309,6 @@
       if(arcgis.attributes) {
         geojson.id =  arcgis.attributes[options.idAttribute] || arcgis.attributes.OBJECTID || arcgis.attributes.FID;
       }
-    }
-
-    var inputSpatialReference = (arcgis.geometry) ? arcgis.geometry.spatialReference : arcgis.spatialReference;
-
-    //convert spatial ref if needed
-    if(inputSpatialReference && inputSpatialReference.wkid === 102100){
-      geojson = Terraformer.toGeographic(geojson);
     }
 
     return new Terraformer.Primitive(geojson);
