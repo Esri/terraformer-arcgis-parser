@@ -1,5 +1,6 @@
 {
   "name": "terraformer-arcgis-parser",
+  "license": "MIT",
   "main": "terraformer-arcgis-parser.min.js",
   "ignore"        : ["versions", "benchmarks"],
   "dependencies": {
