@@ -24,6 +24,7 @@ $ bower install terraformer-arcgis-parser
 
 For full documentation check out the [offical website](http://terraformer.io/arcgis-parser/).
 
+### Node.js
 ```js
 var ArcGIS = require('terraformer-arcgis-parser');
 
@@ -42,7 +43,7 @@ var point = ArcGIS.convert({
   'coordinates': [45.5165, -122.6764]
 });
 ```
-
+### Browser
 ```html
   <!-- Load the main Terraformer library -->
   <script src="terraformer.min.js" type="text/javascript"></script>
@@ -66,7 +67,11 @@ var point = ArcGIS.convert({
       'coordinates': [45.5165, -122.6764]
     });
   </script>
-  ```
+```
+### TypeScript
+```
+import arcgis = require("terraformer-arcgis-parser");
+```
 
 ## Resources
 
@@ -81,5 +86,6 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
 
-[](Esri Tags: Terraformer GeoJSON ArcGIS)
-[](Esri Language: JavaScript)
+## Licensing
+
+A copy of the license is available in the repository's [LICENSE](./LICENSE) file.
