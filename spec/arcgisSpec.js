@@ -3,15 +3,6 @@ if(typeof module === "object"){
   Terraformer.ArcGIS = require("../terraformer-arcgis-parser.js");
 }
 
-beforeEach(function() {
-  this.addMatchers({
-    toBeInstanceOfClass: function(classRef){
-      return this.actual instanceof classRef;
-    }
-  });
-});
-
-
 describe("ArcGIS Tools", function(){
 
   it("should convert a GeoJSON Point to an ArcGIS Point", function() {
@@ -604,7 +595,6 @@ describe("ArcGIS Tools", function(){
     };
 
     var output = Terraformer.ArcGIS.convert(input);
-    console.log(output);
     expect(output).toEqual({
       "x": 123,
       "y": 456,
@@ -624,7 +614,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([-66.796875,20.0390625]);
-    expect(output).toBeInstanceOfClass(Terraformer.Point);
+    expect(output instanceof Terraformer.Point).toBeTruthy();
   });
 
   it("should parse an ArcGIS Point with Z in a Terraformer GeoJSON Point with Z", function() {
@@ -640,7 +630,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([-66.796875,20.0390625, 100]);
-    expect(output).toBeInstanceOfClass(Terraformer.Point);
+    expect(output instanceof Terraformer.Point).toBeTruthy();
   });
 
   it("should parse an ArcGIS Point with Z and M in a Terraformer GeoJSON Point with Z and M", function() {
@@ -657,7 +647,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([-66.796875,20.0390625, 100, 50]);
-    expect(output).toBeInstanceOfClass(Terraformer.Point);
+    expect(output instanceof Terraformer.Point).toBeTruthy();
   });
 
   it("should parse an ArcGIS Point with M in a Terraformer GeoJSON Point with M", function() {
@@ -673,7 +663,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([-66.796875,20.0390625, undefined, 50]);
-    expect(output).toBeInstanceOfClass(Terraformer.Point);
+    expect(output instanceof Terraformer.Point).toBeTruthy();
   });
 
   it("should parse an ArcGIS Null Island in a Terraformer GeoJSON Point", function() {
@@ -688,7 +678,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([0,0]);
-    expect(output).toBeInstanceOfClass(Terraformer.Point);
+    expect(output instanceof Terraformer.Point).toBeTruthy();
   });
 
   it("should parse an ArcGIS Polyline in a Terraformer GeoJSON LineString", function() {
@@ -704,7 +694,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([ [6.6796875,47.8125],[-65.390625,52.3828125],[-52.3828125,42.5390625] ]);
-    expect(output).toBeInstanceOfClass(Terraformer.LineString);
+    expect(output instanceof Terraformer.LineString).toBeTruthy();
   });
 
   it("should parse an ArcGIS Polygon in a Terraformer GeoJSON Polygon", function() {
@@ -750,7 +740,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625] ]);
-    expect(output).toBeInstanceOfClass(Terraformer.MultiPoint);
+    expect(output instanceof Terraformer.MultiPoint).toBeTruthy();
   });
 
   it("should parse an ArcGIS Polyline in a Terraformer GeoJSON MultiLineString", function() {
@@ -767,7 +757,7 @@ describe("ArcGIS Tools", function(){
     var output = Terraformer.ArcGIS.parse(input);
 
     expect(output.coordinates).toEqual([[ [41.8359375,71.015625],[56.953125,33.75] ], [ [21.796875,36.5625],[41.8359375,71.015625] ]]);
-    expect(output).toBeInstanceOfClass(Terraformer.MultiLineString);
+    expect(output instanceof Terraformer.MultiLineString).toBeTruthy();
   });
 
   it("should parse an ArcGIS Polygon in a Terraformer GeoJSON MultiPolygon", function() {
@@ -886,7 +876,7 @@ describe("ArcGIS Tools", function(){
       [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
     ]);
     expect(output.geometry.type).toEqual("Polygon");
-    expect(output).toBeInstanceOfClass(Terraformer.Feature);
+    expect(output instanceof Terraformer.Feature).toBeTruthy();
   });
 
   it("should parse an ArcGIS Feature w/ OBJECTID into a Terraformer Feature", function(){
@@ -970,7 +960,7 @@ describe("ArcGIS Tools", function(){
       [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
     ]);
     expect(output.geometry.type).toEqual("Polygon");
-    expect(output).toBeInstanceOfClass(Terraformer.Feature);
+    expect(output instanceof Terraformer.Feature).toBeTruthy();
   });
 
   it("should parse an ArcGIS Feature w/ no attributes into a Terraformer Feature", function(){
@@ -991,7 +981,7 @@ describe("ArcGIS Tools", function(){
       [ [41.8359375,71.015625],[56.953125,33.75],[21.796875,36.5625],[41.8359375,71.015625] ]
     ]);
     expect(output.geometry.type).toEqual("Polygon");
-    expect(output).toBeInstanceOfClass(Terraformer.Feature);
+    expect(output instanceof Terraformer.Feature).toBeTruthy();
     expect(output.properties).toEqual(null);
   });
 
@@ -1004,7 +994,7 @@ describe("ArcGIS Tools", function(){
 
     var output = Terraformer.ArcGIS.parse(input);
     expect(output.geometry).toEqual(null);
-    expect(output).toBeInstanceOfClass(Terraformer.Feature);
+    expect(output instanceof Terraformer.Feature).toBeTruthy();
     expect(output.properties.foo).toEqual("bar");
   });
 

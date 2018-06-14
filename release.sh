@@ -20,18 +20,21 @@ git add terraformer-arcgis-parser.min.js -f
 git commit -m "build $VERSION"
 
 # push commit so it exists on GitHub when we run gh-release
-git push upstream gh-release
+git push https://github.com/Esri/terraformer-arcgis-parser gh-release
+
+# create copy of minified file with version number appended
+cp terraformer-arcgis-parser.min.js $NAME-$VERSION.min.js
 
 # run gh-release to create the tag and push release to github
 gh-release --assets $NAME-$VERSION.min.js
 
+# remove copy after the asset is attached to the github release
+rm $NAME-$VERSION.min.js
+
 # checkout master and delete release branch locally and on GitHub
 git checkout master
 git branch -D gh-release
-git push upstream :gh-release
+git push https://github.com/Esri/terraformer-arcgis-parser :gh-release
 
 # publish release on NPM
 npm publish
-
-# push to s3 bucket
-grunt s3
