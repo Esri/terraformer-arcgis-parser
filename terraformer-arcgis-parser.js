@@ -293,6 +293,17 @@
       geojson = convertRingsToGeoJSON(arcgis.rings.slice(0));
     }
 
+    if(arcgis.xmin && arcgis.ymin && arcgis.xmax && arcgis.ymax) {
+      geojson.type = "Polygon";
+      geojson.coordinates = [[
+        [arcgis.xmax, arcgis.ymax],
+        [arcgis.xmin, arcgis.ymax],
+        [arcgis.xmin, arcgis.ymin],
+        [arcgis.xmax, arcgis.ymin],
+        [arcgis.xmax, arcgis.ymax]
+      ]];
+    }
+
     if(arcgis.compressedGeometry || arcgis.geometry || arcgis.attributes) {
       geojson.type = "Feature";
 
