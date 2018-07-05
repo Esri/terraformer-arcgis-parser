@@ -1052,4 +1052,21 @@ describe("ArcGIS Tools", function(){
     expect(output.coordinates).toEqual([ [ -117.1816137447153, 34.057461545380946 ],[ -117.18159575425025, 34.06266078978142 ], [ -117.18154178285509, 34.06472969326257 ] ]);
   });
 
+  it("should parse an ArcGIS Extent into a Terraformer GeoJSON Polygon", function () {
+    var input = {
+      "xmax": -35.5078125,
+      "ymax": 41.244772343082076,
+      "xmin": -13.7109375,
+      "ymin": 54.36775852406841,
+      "spatialReference": {
+        "wkid": 4326
+      }
+    };
+
+    var output = Terraformer.ArcGIS.parse(input);
+
+    expect(output.coordinates).toEqual([[[-35.5078125, 41.244772343082076], [-13.7109375, 41.244772343082076], [-13.7109375, 54.36775852406841], [-35.5078125, 54.36775852406841], [-35.5078125, 41.244772343082076]]]);
+    expect(output.type).toEqual("Polygon");
+  });
+
 });
