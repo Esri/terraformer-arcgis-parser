@@ -293,7 +293,12 @@
       geojson = convertRingsToGeoJSON(arcgis.rings.slice(0));
     }
 
-    if(arcgis.xmin && arcgis.ymin && arcgis.xmax && arcgis.ymax) {
+    if(
+      typeof arcgis.xmin === "number" &&
+      typeof arcgis.ymin === "number" &&
+      typeof arcgis.xmax === "number" &&
+      typeof arcgis.ymax === "number"
+    ) {
       geojson.type = "Polygon";
       geojson.coordinates = [[
         [arcgis.xmax, arcgis.ymax],
