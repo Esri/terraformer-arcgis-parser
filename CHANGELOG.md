@@ -4,6 +4,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+## [1.1.0] - 2018-07-09
+
+### Added
+
+* ArcGIS Extents/Envelopes are now converted to GeoJSON polygons 🙏CorinChappy🙏
+* great new command line demo app 🙏gseyffert🙏
+* an appropriate CRS is appended to output GeoJSON when web mercator geometries are encountered.
+
+### Changed
+
+* Ensure ring-order of GeoJSON is compliant with RFC 7946
+* web mercator northings/eastings are no longer reprojected during conversion.
+* TypeScript support files updated 🙏JeffJacobson🙏
+
 ## [1.0.5] - 2016-08-16
 
 ### Fixed
@@ -14,6 +28,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * typings for TypeScript folks (thx [@JeffJacobson](https://github.com/JeffJacobson)) [#34](https://github.com/Esri/terraformer-arcgis-parser/pull/34)
 
 ## [1.0.4] - 2014-06-17
+
 ### Fixed
 * Account for breaking change in `Terraformer`
 
@@ -21,10 +36,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * support for `z` and `m` conversion
 
 ## [1.0.3] - 2015-02-24
+
 ### Fixed
 * valid output on both ends of conversion [#19](https://github.com/Esri/terraformer-arcgis-parser/issues/19)
 
 ## [1.0.2] - 2014-02-10
+
 ### Added
 * `parseCompressedGeometry()` [#10](https://github.com/Esri/terraformer-arcgis-parser/issues/10)
 
@@ -33,6 +50,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * `parse()` now handles `compressedGeometry`
 
 ## [1.0.1] - 2013-12-04
+
 ### Fixed
 * `ReferenceError: sr is not defined` in `ArcGIS.convert()`
 
@@ -45,7 +63,8 @@ npm install terraformer-arcgis-parser
 bower install terraformer-arcgis-parser
 ```
 
-[unreleased]: https://github.com/Esri/terraformer-arcgis-parser/compare/v1.0.5...HEAD
+[unreleased]: https://github.com/Esri/terraformer-arcgis-parser/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Esri/terraformer-arcgis-parser/compare/v1.0.5...v1.1.0
 [1.0.5]: https://github.com/Esri/terraformer-arcgis-parser/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/Esri/terraformer-arcgis-parser/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/Esri/terraformer-arcgis-parser/compare/v1.0.2...v1.0.3

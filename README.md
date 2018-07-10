@@ -14,12 +14,6 @@
 
 In the browser, [Terraformer](http://github.com/esri/terraformer) is required.
 
-You can use [Bower](http://bower.io/) to install the components if you like or download them and host them yourself.
-
-```
-$ bower install terraformer-arcgis-parser
-```
-
 ## Documentation
 
 For full documentation check out the [offical website](http://terraformer.io/arcgis-parser/).
@@ -46,10 +40,10 @@ var point = ArcGIS.convert({
 ### Browser
 ```html
   <!-- Load the main Terraformer library -->
-  <script src="terraformer.min.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/terraformer/terraformer.js" type="text/javascript"></script>
 
   <!-- Load the ArcGIS Parser -->
-  <script src="terraformer-arcgis-parser.min.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/terraformer-arcgis-parser/terraformer-arcgis-parser.js" type="text/javascript"></script>
 
   <!-- Use it! -->
   <script>
@@ -87,5 +81,7 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
 
 ## Licensing
+
+Copyright &copy; 2013-2018 Esri
 
 A copy of the license is available in the repository's [LICENSE](./LICENSE) file.

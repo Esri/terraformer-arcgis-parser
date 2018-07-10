@@ -1,6 +1,6 @@
 {
   "name": "terraformer-arcgis-parser",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "ArcGIS JSON format parser and converter",
   "main": "terraformer-arcgis-parser.js",
   "files": [
