@@ -1,8 +1,12 @@
+# Important!
+
+This repo is part of the Terraformer project which has been archived. See https://github.com/Esri/terraformer#important for more details.
+
 # Terraformer ArcGIS JSON Parser
 
 [![Build Status](https://travis-ci.org/Esri/terraformer-arcgis-parser.svg?branch=master)](https://travis-ci.org/Esri/terraformer-arcgis-parser)
 
-> Two way conversion between [GeoJSON](http://geojson.org/geojson-spec.html) and [ArcGIS Geometry](http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html). Part of the [Terraformer](http://terraformer.io) project.
+> Two way conversion between [GeoJSON](http://geojson.org/geojson-spec.html) and [ArcGIS Geometry](http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html).
 
 ## Installing
 
@@ -16,7 +20,7 @@ In the browser, [Terraformer](http://github.com/esri/terraformer) is required.
 
 ## Documentation
 
-For full documentation check out the [offical website](http://terraformer.io/arcgis-parser/).
+For full documentation check https://github.com/Esri/terraformer/blob/master/docs/arcgis-parser.md.
 
 ### Node.js
 ```js
@@ -66,11 +70,6 @@ var point = ArcGIS.convert({
 ```
 import arcgis = require("terraformer-arcgis-parser");
 ```
-
-## Resources
-
-* [Terraformer Website](http://terraformer.io)
-* [twitter@EsriPDX](http://twitter.com/esripdx)
 
 ## Issues
 
